@@ -28,6 +28,7 @@ func (d debugging) DumpVariables() {
 	if d {
 		log.Println("Dump Variables")
 		log.Printf("%-10s = %v", "version", version)
+		log.Printf("%-10s = %v", "command", command)
 		log.Printf("%-10s = %v", "project", *project)
 		log.Printf("%-10s = %v", "bucketName", *bucketName)
 	}
