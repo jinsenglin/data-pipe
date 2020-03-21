@@ -36,16 +36,18 @@ func (client *GCSclient) read (bucketName, filePath string) ([]byte, error) {
 
 // write for passed filePath
 func (client *GCSclient) write (bucketName, filePath string, fileContent []byte) (error) {
-    ctx, cancel := context.WithTimeout(context.Background(), 300*time.Second)
+    ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
     defer cancel()
 
     writer := client.Bucket(bucketName).Object(filePath).NewWriter(ctx)
-    defer writer.Close()
 
-    _, err := writer.Write(fileContent)
-    if err != nil {
+    if _, err := writer.Write(fileContent); err != nil {
 		return err
 	}
+
+    if err := writer.Close(); err != nil {
+		return err
+    }
 
     return nil
 }
@@ -61,8 +63,7 @@ func (client *GCSclient) writeCSV(bucketName, filePath string, objects interface
 		return err
     }
 
-    err = client.write(bucketName, filePath, []byte(csv))
-    if err != nil {
+    if err := client.write(bucketName, filePath, []byte(csv)); err != nil {
         log.Printf("Couldn't write csv %s: %v", filePath, err)
 		return err
     }
@@ -75,8 +76,7 @@ func (client *GCSclient) writeCSV(bucketName, filePath string, objects interface
 // NewGCSService creates new authenticated Cloud Storage client.
 // The client will use your default application credentials.
 func NewGCSClient() (*GCSclient, error) {
-    ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
-    defer cancel()
+    ctx := context.Background()
 
     client, err := storage.NewClient(ctx)
 	if err != nil {

@@ -25,6 +25,7 @@ func generate() {
 
     debugger.Println("Waiting for write to GCS to finish....")
     wgGenerate.Wait()
+    debugger.Println("Done generating")
 }
 
 func generateAccounts(gcs *GCSclient, wg *sync.WaitGroup) {
@@ -43,9 +44,9 @@ func generateAccounts(gcs *GCSclient, wg *sync.WaitGroup) {
 
             wgGenerateAccounts.Add(1)
             go gcs.writeCSV(*bucketName, fileName, accounts, wgGenerateAccounts)
-        }
 
-//        accounts = []*Account{} 
+            accounts = []*Account{}
+        }
     }
 
     fileName := fmt.Sprintf("%v-%04d.csv", "account", *numAccounts/recordsPerFile)
