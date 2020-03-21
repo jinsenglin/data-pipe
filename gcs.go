@@ -7,7 +7,8 @@ import (
     "cloud.google.com/go/storage"
 )
 
-// GCSclient is an authenticated Cloud Storage client
+// GCSclient is an authenticated Cloud Storage client.
+// Golang technique here is embedding.
 type GCSclient struct {
     *storage.Client
 }
