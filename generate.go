@@ -16,8 +16,8 @@ func generate() {
 
     wgGenerate.Add(1)
     go generateAccounts(gcs, wgGenerate)
-//    wgGenerate.Add(1)
-//    go generateSigners(gcs, wgGenerate)
+    wgGenerate.Add(1)
+    go generateSigners(gcs, wgGenerate)
 //    wgGenerate.Add(1)
 //    go generateAlbums(gcs, wgGenerate)
 //    wgGenerate.Add(1)
@@ -49,10 +49,12 @@ func generateAccounts(gcs *GCSclient, wg *sync.WaitGroup) {
         }
     }
 
-    fileName := fmt.Sprintf("%v-%04d.csv", "account", *numAccounts/recordsPerFile)
+    if len(accounts) > 0 {
+        fileName := fmt.Sprintf("%v-%04d.csv", "account", *numAccounts/recordsPerFile)
 
-    wgGenerateAccounts.Add(1)
-    go gcs.writeCSV(*bucketName, fileName, accounts, wgGenerateAccounts)
+        wgGenerateAccounts.Add(1)
+        go gcs.writeCSV(*bucketName, fileName, accounts, wgGenerateAccounts)
+    }
 
     debugger.Println("Waiting for write accounts to GCS to finish....")
     wgGenerateAccounts.Wait()
@@ -65,7 +67,15 @@ func generateSigners(gcs *GCSclient, wg *sync.WaitGroup) {
 
     debugger.Printf("Generating %v signers...", *numSigners)
 
+    wgGenerateSigners := &sync.WaitGroup{}
+
     // TODO: Implement.
+    // go producers (N) ... challenge: numSigners/numProducers
+    // chan
+    // go consuomer (1)
+
+    debugger.Println("Waiting for write signers to GCS to finish....")
+    wgGenerateSigners.Wait()
 
     debugger.Printf("Done generating %v signers...", *numSigners)
 }
