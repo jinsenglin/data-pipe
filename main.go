@@ -1,7 +1,6 @@
 package main
 
 import (
-    "fmt"
     "log"
 
     "github.com/namsral/flag"
@@ -12,13 +11,18 @@ var (
 
     project = flag.String("project", "", "Your cloud project ID.")
     bucketName = flag.String("bucket", "", "The name of the bucket within your project.")
+
+    debugger debugging
 )
 
 func main() {
+    // init var
     flag.Parse()
 
-    fmt.Println(*project)
-    fmt.Println(*bucketName)
+    // init var
+    debugger = debugging(true)
+
+    debugger.DumpVariables()
 
     gcs, err := NewGCSClient()
     if err != nil {
