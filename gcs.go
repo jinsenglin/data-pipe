@@ -2,6 +2,8 @@ package main
 
 import (
     "context"
+    "log"
+    "sync"
     "time"
 
     "cloud.google.com/go/storage"
@@ -40,7 +42,11 @@ func (client *GCSclient) write (bucketName, filePath string, fileContent []byte)
 }
 
 // marshal passed objects then write for passed filePath
-func (client *GCSclient) writeCSV(bucketName, filePath string, objects interface{}) error {
+func (client *GCSclient) writeCSV(bucketName, filePath string, objects interface{}, wg *sync.WaitGroup) error {
+    defer wg.Done()
+
+    debugger.Printf("Writing csv %s", filePath)
+
     csv, err := gocsv.MarshalString(objects)
     if err != nil {
 		return err
@@ -48,8 +54,11 @@ func (client *GCSclient) writeCSV(bucketName, filePath string, objects interface
 
     err = client.write(bucketName, filePath, []byte(csv))
     if err != nil {
+        log.Printf("Couldn't write csv %s: %v", filePath, err)
 		return err
     }
+
+    debugger.Printf("Done writing csv %s", filePath)
 
     return nil
 }

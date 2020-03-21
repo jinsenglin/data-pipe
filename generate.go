@@ -12,19 +12,19 @@ func generate() {
         log.Fatalf("Couldn't connect to Google Cloud Storage: %v", err)
     }
 
-    wg := &sync.WaitGroup{}
+    wgGenerate := &sync.WaitGroup{}
 
-    wg.Add(1)
-    go generateAccounts(gcs, wg)
-    wg.Add(1)
-    go generateSigners(gcs, wg)
-    wg.Add(1)
-    go generateAlbums(gcs, wg)
-    wg.Add(1)
-    go generateSongs(gcs, wg)
+    wgGenerate.Add(1)
+    go generateAccounts(gcs, wgGenerate)
+    wgGenerate.Add(1)
+    go generateSigners(gcs, wgGenerate)
+    wgGenerate.Add(1)
+    go generateAlbums(gcs, wgGenerate)
+    wgGenerate.Add(1)
+    go generateSongs(gcs, wgGenerate)
 
     debugger.Println("Waiting for write to GCS to finish....")
-    wg.Wait()
+    wgGenerate.Wait()
 }
 
 func generateAccounts(gcs *GCSclient, wg *sync.WaitGroup) {
@@ -32,25 +32,29 @@ func generateAccounts(gcs *GCSclient, wg *sync.WaitGroup) {
 
     debugger.Printf("Generating %v accounts...", *numAccounts)
 
+    wgGenerateAccounts := &sync.WaitGroup{}
+
     var accounts []*Account
     for i := 0; i < *numAccounts; i++ {
         accounts = append(accounts, NewAccount(int64(i)))
 
         if len(accounts) % recordsPerFile == 0 {
             fileName := fmt.Sprintf("%v-%04d.csv", "account", i/recordsPerFile)
-            err := gcs.writeCSV(*bucketName, fileName, accounts)
-            if err != nil {
-                log.Fatalf("Couldn't generate accounts: %v", err)
-            }
+
+            wgGenerateAccounts.Add(1)
+            go gcs.writeCSV(*bucketName, fileName, accounts, wgGenerateAccounts)
         }
 
         accounts = []*Account{} 
     }
+
     fileName := fmt.Sprintf("%v-%04d.csv", "account", *numAccounts/recordsPerFile)
-    err := gcs.writeCSV(*bucketName, fileName, accounts)
-    if err != nil {
-        log.Fatalf("Couldn't generate accounts: %v", err)
-    }
+
+    wgGenerateAccounts.Add(1)
+    go gcs.writeCSV(*bucketName, fileName, accounts, wgGenerateAccounts)
+
+    debugger.Println("Waiting for write accounts to GCS to finish....")
+    wgGenerateAccounts.Wait()
 
     debugger.Printf("Done generating %v accounts...", *numAccounts)
 }
