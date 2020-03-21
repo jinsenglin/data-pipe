@@ -36,7 +36,16 @@ func (client *GCSclient) read (bucketName, filePath string) ([]byte, error) {
 
 // write for passed filePath
 func (client *GCSclient) write (bucketName, filePath string, fileContent []byte) (error) {
-    // TODO: Implement
+    ctx, cancel := context.WithTimeout(context.Background(), 300*time.Second)
+    defer cancel()
+
+    writer := client.Bucket(bucketName).Object(filePath).NewWriter(ctx)
+    defer writer.Close()
+
+    _, err := writer.Write(fileContent)
+    if err != nil {
+		return err
+	}
 
     return nil
 }

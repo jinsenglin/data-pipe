@@ -16,12 +16,12 @@ func generate() {
 
     wgGenerate.Add(1)
     go generateAccounts(gcs, wgGenerate)
-    wgGenerate.Add(1)
-    go generateSigners(gcs, wgGenerate)
-    wgGenerate.Add(1)
-    go generateAlbums(gcs, wgGenerate)
-    wgGenerate.Add(1)
-    go generateSongs(gcs, wgGenerate)
+//    wgGenerate.Add(1)
+//    go generateSigners(gcs, wgGenerate)
+//    wgGenerate.Add(1)
+//    go generateAlbums(gcs, wgGenerate)
+//    wgGenerate.Add(1)
+//    go generateSongs(gcs, wgGenerate)
 
     debugger.Println("Waiting for write to GCS to finish....")
     wgGenerate.Wait()
@@ -45,7 +45,7 @@ func generateAccounts(gcs *GCSclient, wg *sync.WaitGroup) {
             go gcs.writeCSV(*bucketName, fileName, accounts, wgGenerateAccounts)
         }
 
-        accounts = []*Account{} 
+//        accounts = []*Account{} 
     }
 
     fileName := fmt.Sprintf("%v-%04d.csv", "account", *numAccounts/recordsPerFile)
