@@ -5,6 +5,7 @@ import (
     "time"
 
     "cloud.google.com/go/storage"
+    "github.com/gocarina/gocsv"
 )
 
 // GCSclient is an authenticated Cloud Storage client.
@@ -29,6 +30,28 @@ func (client *GCSclient) read (bucketName, filePath string) ([]byte, error) {
     // TODO: Implement
 
     return file, nil
+}
+
+// write for passed filePath
+func (client *GCSclient) write (bucketName, filePath string, fileContent []byte) (error) {
+    // TODO: Implement
+
+    return nil
+}
+
+// marshal passed objects then write for passed filePath
+func (client *GCSclient) writeCSV(bucketName, filePath string, objects interface{}) error {
+    csv, err := gocsv.MarshalString(objects)
+    if err != nil {
+		return err
+    }
+
+    err = client.write(bucketName, filePath, []byte(csv))
+    if err != nil {
+		return err
+    }
+
+    return nil
 }
 
 // NewGCSService creates new authenticated Cloud Storage client.

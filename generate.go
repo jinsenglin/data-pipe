@@ -1,6 +1,7 @@
 package main
 
 import (
+    "fmt"
     "log"
     "sync"
 )
@@ -29,39 +30,57 @@ func generate() {
 func generateAccounts(gcs *GCSclient, wg *sync.WaitGroup) {
 	defer wg.Done()
 
-    debugger.Printf("Generating %v accounts...", 1000)
+    debugger.Printf("Generating %v accounts...", *numAccounts)
 
-    // TODO: Implement.
+    var accounts []*Account
     for i := 0; i < *numAccounts; i++ {
-        debugger.Printf("Generating account %v", i)
+        accounts = append(accounts, NewAccount(int64(i)))
+
+        if len(accounts) % recordsPerFile == 0 {
+            fileName := fmt.Sprintf("%v-%04d.csv", "account", i/recordsPerFile)
+            err := gcs.writeCSV(*bucketName, fileName, accounts)
+            if err != nil {
+                log.Fatalf("Couldn't generate accounts: %v", err)
+            }
+        }
+
+        accounts = []*Account{} 
+    }
+    fileName := fmt.Sprintf("%v-%04d.csv", "account", *numAccounts/recordsPerFile)
+    err := gcs.writeCSV(*bucketName, fileName, accounts)
+    if err != nil {
+        log.Fatalf("Couldn't generate accounts: %v", err)
     }
 
-    debugger.Printf("Done generating %v accounts...", 1000)
+    debugger.Printf("Done generating %v accounts...", *numAccounts)
 }
+
 func generateSigners(gcs *GCSclient, wg *sync.WaitGroup) {
 	defer wg.Done()
 
-    debugger.Printf("Generating %v signers...", 1000)
+    debugger.Printf("Generating %v signers...", *numSigners)
 
     // TODO: Implement.
 
-    debugger.Printf("Done generating %v signers...", 1000)
+    debugger.Printf("Done generating %v signers...", *numSigners)
 }
+
 func generateAlbums(gcs *GCSclient, wg *sync.WaitGroup) {
 	defer wg.Done()
 
-    debugger.Printf("Generating %v albums...", 1000)
+    debugger.Printf("Generating %v albums...", *numAlbums)
 
     // TODO: Implement.
 
-    debugger.Printf("Done generating %v albums...", 1000)
+    debugger.Printf("Done generating %v albums...", *numAlbums)
 }
+
 func generateSongs(gcs *GCSclient, wg *sync.WaitGroup) {
 	defer wg.Done()
 
-    debugger.Printf("Generating %v songs...", 1000)
+    debugger.Printf("Generating %v songs...", *numSongs)
 
     // TODO: Implement.
 
-    debugger.Printf("Done generating %v songs...", 1000)
+    debugger.Printf("Done generating %v songs...", *numSongs)
 }

@@ -57,6 +57,12 @@
 			"revisionTime": "2019-08-26T21:34:12Z"
 		},
 		{
+			"checksumSHA1": "E3Lm3QF5ENwDl+K2k+bhUZYeuSw=",
+			"path": "github.com/gocarina/gocsv",
+			"revision": "ffb15402e9f4e1b9dd47cdb9eef83c5cd8a237eb",
+			"revisionTime": "2020-03-19T09:36:47Z"
+		},
+		{
 			"checksumSHA1": "LHNzQwau1zPeFPPG5zbNf8AgUOQ=",
 			"origin": "cloud.google.com/go/vendor/github.com/golang/groupcache/lru",
 			"path": "github.com/golang/groupcache/lru",

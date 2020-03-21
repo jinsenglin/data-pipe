@@ -17,6 +17,7 @@ var (
     numSigners = flag.Int("signers", 10000, "Number of signers to generate / load.")
     numAlbums = flag.Int("albums", 100000, "Number of albums to generate / load.")
     numSongs = flag.Int("songs", 1000000, "Number of songs to generate / load.")
+    recordsPerFile = 100000
 
     debugger debugging
 )
