@@ -32,6 +32,11 @@ func generateAccounts(gcs *GCSclient, wg *sync.WaitGroup) {
     debugger.Printf("Generating %v accounts...", 1000)
 
     // TODO: Implement.
+    for i := 0; i < *numAccounts; i++ {
+        debugger.Printf("Generating account %v", i)
+    }
+
+    debugger.Printf("Done generating %v accounts...", 1000)
 }
 func generateSigners(gcs *GCSclient, wg *sync.WaitGroup) {
 	defer wg.Done()
@@ -39,6 +44,8 @@ func generateSigners(gcs *GCSclient, wg *sync.WaitGroup) {
     debugger.Printf("Generating %v signers...", 1000)
 
     // TODO: Implement.
+
+    debugger.Printf("Done generating %v signers...", 1000)
 }
 func generateAlbums(gcs *GCSclient, wg *sync.WaitGroup) {
 	defer wg.Done()
@@ -46,6 +53,8 @@ func generateAlbums(gcs *GCSclient, wg *sync.WaitGroup) {
     debugger.Printf("Generating %v albums...", 1000)
 
     // TODO: Implement.
+
+    debugger.Printf("Done generating %v albums...", 1000)
 }
 func generateSongs(gcs *GCSclient, wg *sync.WaitGroup) {
 	defer wg.Done()
@@ -53,4 +62,6 @@ func generateSongs(gcs *GCSclient, wg *sync.WaitGroup) {
     debugger.Printf("Generating %v songs...", 1000)
 
     // TODO: Implement.
+
+    debugger.Printf("Done generating %v songs...", 1000)
 }
