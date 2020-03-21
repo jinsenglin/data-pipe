@@ -51,6 +51,12 @@
 			"revisionTime": "2020-03-20T04:57:54Z"
 		},
 		{
+			"checksumSHA1": "JQs1Oe7nu1d/0AzMhmLryaQjP+A=",
+			"path": "github.com/corpix/uarand",
+			"revision": "6fd8ff1ca6b2b41116c4bb7571662b9762ae62d6",
+			"revisionTime": "2019-08-26T21:34:12Z"
+		},
+		{
 			"checksumSHA1": "LHNzQwau1zPeFPPG5zbNf8AgUOQ=",
 			"origin": "cloud.google.com/go/vendor/github.com/golang/groupcache/lru",
 			"path": "github.com/golang/groupcache/lru",
@@ -140,6 +146,12 @@
 			"path": "github.com/googleapis/gax-go/v2",
 			"revision": "6d2a73c7941e1a2004481be169bffe7319ec9c99",
 			"revisionTime": "2020-03-20T04:57:54Z"
+		},
+		{
+			"checksumSHA1": "Yz0zzyHN8gfkFB0ShiF7JAzBgAY=",
+			"path": "github.com/icrowley/fake",
+			"revision": "4178557ae428460c3780a381c824a1f3aceb6325",
+			"revisionTime": "2018-02-03T21:58:53Z"
 		},
 		{
 			"checksumSHA1": "10rB/myPkrDxzdJKJ2MIRt7BkkU=",
