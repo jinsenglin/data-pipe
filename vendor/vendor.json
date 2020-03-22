@@ -147,6 +147,12 @@
 			"revisionTime": "2020-03-20T04:57:54Z"
 		},
 		{
+			"checksumSHA1": "tMN8paScH/ljdHnlZaVqq5qDoUM=",
+			"path": "github.com/google/uuid",
+			"revision": "7c63a14153262497940ad1c2237accc855f47684",
+			"revisionTime": "2020-03-12T01:34:31Z"
+		},
+		{
 			"checksumSHA1": "NqlcmlYFsLm2R1iJY0zynpIWNhg=",
 			"origin": "cloud.google.com/go/vendor/github.com/googleapis/gax-go/v2",
 			"path": "github.com/googleapis/gax-go/v2",

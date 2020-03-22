@@ -4,6 +4,8 @@ import (
     "fmt"
     "log"
     "sync"
+
+    "github.com/google/uuid"
 )
 
 func generate() {
@@ -67,25 +69,28 @@ func generateSingers(gcs *GCSclient, wg *sync.WaitGroup) {
 
     debugger.Printf("Generating %v singers...", *numSingers)
 
-    wgGenerateSingers := &sync.WaitGroup{}
+    wgGenerateSingersP := &sync.WaitGroup{}
+    wgGenerateSingersC := &sync.WaitGroup{}
 
     chSingers := make(chan *Singer, *numSingers)
 
-    wgGenerateSingers.Add(1)
-    go generateSingersConsumer(gcs, chSingers, wgGenerateSingers)
+    wgGenerateSingersC.Add(1)
+    go generateSingersConsumer(gcs, chSingers, wgGenerateSingersC)
 
     batchSingers := 0
     for batchSingers = *numSingers; batchSingers > recordsPerFile; batchSingers -= recordsPerFile {
-        wgGenerateSingers.Add(1)
-        go generateSingersProducer(recordsPerFile, chSingers, wgGenerateSingers)
+        wgGenerateSingersP.Add(1)
+        go generateSingersProducer(recordsPerFile, chSingers, wgGenerateSingersP)
     }
     if batchSingers > 0 {
-        go generateSingersProducer(batchSingers, chSingers, wgGenerateSingers)
+        wgGenerateSingersP.Add(1)
+        go generateSingersProducer(batchSingers, chSingers, wgGenerateSingersP)
     }
 
-    debugger.Println("Waiting for write signers to GCS to finish....")
-    wgGenerateSingers.Wait()
+    debugger.Println("Waiting for write singers to GCS to finish....")
+    wgGenerateSingersP.Wait()
     close(chSingers)
+    wgGenerateSingersC.Wait()
 
     debugger.Printf("Done generating %v singers...", *numSingers)
 }
@@ -96,7 +101,8 @@ func generateSingersProducer(batchSize int, out chan<- *Singer, wg *sync.WaitGro
     debugger.Printf("Producing %v singers...", batchSize)
 
     for i := 0; i < batchSize; i++ {
-        out <- NewSinger("") // TODO: Implement uuid v4 id
+        id := uuid.New().String()
+        out <- NewSinger(id)
     }
 
     debugger.Printf("Done producing %v singers...", batchSize)
@@ -104,15 +110,37 @@ func generateSingersProducer(batchSize int, out chan<- *Singer, wg *sync.WaitGro
 func generateSingersConsumer(gcs *GCSclient, in <-chan *Singer, wg *sync.WaitGroup) {
     defer wg.Done()
 
-    debugger.Printf("Consuming singers...")
+    debugger.Println("Consuming singers...")
 
+    wgGenerateSingersConsumer := &sync.WaitGroup{}
+
+    i := -1
+    var singers []*Singer
     for singer := range in {
-        // TODO: Implement write signer
-        if singer != nil {
+        i++
+        singers = append(singers, singer)
+
+        if len(singers) % recordsPerFile == 0 {
+            fileName := fmt.Sprintf("%v-%04d.csv", "singer", i/recordsPerFile)
+
+            wgGenerateSingersConsumer.Add(1)
+            go gcs.writeCSV(*bucketName, fileName, singers, wgGenerateSingersConsumer)
+
+            singers = []*Singer{}
         }
     }
 
-    debugger.Printf("Done consuming singers...")
+    if len(singers) > 0 {
+        fileName := fmt.Sprintf("%v-%04d.csv", "singer", *numAccounts/recordsPerFile)
+
+        wgGenerateSingersConsumer.Add(1)
+        go gcs.writeCSV(*bucketName, fileName, singers, wgGenerateSingersConsumer)
+    }
+
+    debugger.Println("Waiting for write singers to GCS to finish....")
+    wgGenerateSingersConsumer.Wait()
+
+    debugger.Println("Done consuming singers...")
 }
 
 func generateAlbums(gcs *GCSclient, wg *sync.WaitGroup) {
