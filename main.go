@@ -12,6 +12,8 @@ var (
 
     project = flag.String("project", "", "Your cloud project ID.")
     bucketName = flag.String("bucket", "", "The name of the bucket within your project.")
+    instance = flag.String("instance", "", "The Cloud Spanner Instance within your project.")
+    database = flag.String("database", "", "The database name in your Cloud Spanner Instance.")
 
     numAccounts = flag.Int("accounts", 10000, "Number of accounts to generate / load.")
     numSingers = flag.Int("singers", 10000, "Number of singers to generate / load.")
@@ -40,7 +42,7 @@ func main() {
             generate()
             break
         case "load":
-            // TODO: Implement.
+            load()
             break
         case "reset":
             // TODO: Implement.

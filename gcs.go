@@ -73,7 +73,7 @@ func (client *GCSclient) writeCSV(bucketName, filePath string, objects interface
     return nil
 }
 
-// NewGCSService creates new authenticated Cloud Storage client.
+// NewGCSClient creates new authenticated Cloud Storage client.
 // The client will use your default application credentials.
 func NewGCSClient() (*GCSclient, error) {
     ctx := context.Background()

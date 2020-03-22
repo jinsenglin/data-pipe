@@ -16,8 +16,8 @@ func generate() {
 
     wgGenerate := &sync.WaitGroup{}
 
-//    wgGenerate.Add(1)
-//    go generateAccounts(gcs, wgGenerate)
+    wgGenerate.Add(1)
+    go generateAccounts(gcs, wgGenerate)
     wgGenerate.Add(1)
     go generateSingers(gcs, wgGenerate)
 //    wgGenerate.Add(1)
