@@ -14,7 +14,7 @@ var (
     bucketName = flag.String("bucket", "", "The name of the bucket within your project.")
 
     numAccounts = flag.Int("accounts", 10000, "Number of accounts to generate / load.")
-    numSigners = flag.Int("signers", 10000, "Number of signers to generate / load.")
+    numSingers = flag.Int("singers", 10000, "Number of singers to generate / load.")
     numAlbums = flag.Int("albums", 100000, "Number of albums to generate / load.")
     numSongs = flag.Int("songs", 1000000, "Number of songs to generate / load.")
     recordsPerFile = 100000
