@@ -1,8 +1,9 @@
 package main
 
 import (
-    "fmt"
     "context"
+    "fmt"
+    "time"
 
     "cloud.google.com/go/spanner"
 )
@@ -11,6 +12,26 @@ import (
 // Golang technique here is embedding.
 type Spannerclient struct {
     *spanner.Client
+}
+
+func (client *Spannerclient) newMutation (table string, s interface{}) (*spanner.Mutation, error) {
+    mutation, err := spanner.InsertOrUpdateStruct(table, s)
+    if err != nil {
+        return nil, err
+    }
+
+    return mutation, nil
+}
+
+func (client *Spannerclient) write (mutations []*spanner.Mutation) (error) {
+    ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+    defer cancel()
+
+    if _, err := client.Apply(ctx, mutations); err != nil {
+        return err
+    }
+
+    return nil
 }
 
 // NewSpannerClient creates new authenticated Cloud Spanner client.
