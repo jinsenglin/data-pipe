@@ -3,11 +3,13 @@ package main
 import (
     "context"
     "log"
+    "sort"
     "sync"
     "time"
 
     "cloud.google.com/go/storage"
     "github.com/gocarina/gocsv"
+    "google.golang.org/api/iterator"
 )
 
 // GCSclient is an authenticated Cloud Storage client.
@@ -18,9 +20,25 @@ type GCSclient struct {
 
 // list for passed bucketName filtered by passed filePrefix
 func (client *GCSclient) list (bucketName string, filePrefix string) ([]string, error) {
-    var files []string
+	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
 
-    // TODO: Implement.
+	var files []string
+
+	it := client.Bucket(bucketName).Objects(ctx, &storage.Query{Prefix: filePrefix})
+
+	for {
+		objAttrs, err := it.Next()
+		if err == iterator.Done {
+			break
+		}
+		if err != nil {
+			return nil, err
+		}
+		files = append(files, objAttrs.Name)
+	}
+
+	sort.Strings(files)
 
     return files, nil
 }
