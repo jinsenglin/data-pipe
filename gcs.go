@@ -2,6 +2,7 @@ package main
 
 import (
     "context"
+    "io/ioutil"
     "log"
     "sort"
     "sync"
@@ -45,9 +46,22 @@ func (client *GCSclient) list (bucketName string, filePrefix string) ([]string, 
 
 // read for passed filePath
 func (client *GCSclient) read (bucketName, filePath string) ([]byte, error) {
-    var file []byte
+    ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
+	defer cancel()
 
-    // TODO: Implement
+	reader, err := client.Bucket(bucketName).Object(filePath).NewReader(ctx)
+
+	if err != nil {
+		return nil, err
+	}
+
+	defer reader.Close()
+
+	file, err := ioutil.ReadAll(reader)
+
+	if err != nil {
+		return nil, err
+	}
 
     return file, nil
 }
