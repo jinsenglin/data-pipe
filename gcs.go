@@ -67,25 +67,16 @@ func (client *GCSclient) read (bucketName, filePath string) ([]byte, error) {
 }
 
 // read for passed filePath then unmarshal the file content
-func (client *GCSclient) readCSV (bucketName, filePath string, callback func(interface{}) error) (error) {
-    // TODO: Implement.
-
+func (client *GCSclient) readCSV (bucketName, filePath string, callback interface{}) (error) {
     file, err := client.read(bucketName, filePath)
 
     if err != nil {
         return err
     }
 
-    gocsv.UnmarshalBytesToCallback(file, callback)
-
-/*
-                    gocsv.UnmarshalBytesToCallback(j.files[j.mapping["accounts"]], func(a *dbAccount) error {
-						id := uuid.New()
-						a.AccountID = string(encodeHexUUID(&id))
-						j.lookup["accounts"][a.OldID] = &id
-						return appendMutation(chs[0], "Account", a.AccountID, a)
-					})
-*/
+    if err := gocsv.UnmarshalBytesToCallback(file, callback); err != nil {
+        return err
+    }
 
     return nil
 }
