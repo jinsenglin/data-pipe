@@ -14,6 +14,7 @@ var (
     bucketName = flag.String("bucket", "", "The name of the bucket within your project.")
     instance = flag.String("instance", "", "The Cloud Spanner Instance within your project.")
     database = flag.String("database", "", "The database name in your Cloud Spanner Instance.")
+    schemaFile = flag.String("schema", "schema.sql", "Path to schema file for 'create' command")
 
     numAccounts = flag.Int("accounts", 10000, "Number of accounts to generate / load.")
     numSingers = flag.Int("singers", 10000, "Number of singers to generate / load.")
@@ -37,7 +38,7 @@ func main() {
 
     switch command {
         case "create":
-            // TODO: Implement.
+            create()
             break
         case "generate":
             generate()

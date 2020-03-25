@@ -34,6 +34,16 @@ func (client *Spannerclient) write (mutations []*spanner.Mutation) (error) {
     return nil
 }
 
+func (client *Spannerclient) cleanup () {
+    // TODO: Implement.
+}
+
+func (client *Spannerclient) createDB (schema string) error {
+    // TODO: Implement.
+    return nil
+}
+
+
 // NewSpannerClient creates new authenticated Cloud Spanner client.
 // The client will use your default application credentials.
 func NewSpannerClient() (*Spannerclient, error) {
