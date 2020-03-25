@@ -6,6 +6,9 @@ import (
 
 type debugging bool
 
+func (d debugging) PrintNothing(args ...interface{}) {
+}
+
 func (d debugging) Printf(format string, args ...interface{}) {
 	if d {
 		log.Printf(format, args...)
@@ -33,5 +36,4 @@ func (d debugging) DumpVariables() {
 		log.Printf("%-10s = %v", "bucketName", *bucketName)
 	}
 }
-
 
