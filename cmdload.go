@@ -7,7 +7,7 @@ import (
 )
 
 func load() {
-    spannerClient, err := NewSpannerClient()
+    sc, err := NewSpannerClient()
     if err != nil {
         log.Fatalf("Couldn't connect to Google Cloud Spanner: %v", err)
     }
@@ -17,20 +17,22 @@ func load() {
         log.Fatalf("Couldn't connect to Google Cloud Storage: %v", err)
     }
 
+    loadAccount(sc, gcs)
+}
+
+func loadAccount(sc SpannerClient, gcs *GCSClient) {
     files, err := gcs.list(*bucket, "account-")
     if err != nil {
         log.Fatalf("Couldn't list files of prefix account- %v", err)
     }
 
-    // TODO: Implement.
     chAccounts := make(chan *Account, *numAccounts)
     chMutations := make(chan *spanner.Mutation, *numAccounts)
     chBatchMutations := make(chan []*spanner.Mutation, *numAccounts/100)
 
     for _, file := range files {
         debugger.Printf("Loading file %s...", file)
-        gcs.readCSV(*bucket, file, func(account *Account) {
-            // TODO: Implement.
+        go gcs.readCSV(*bucket, file, func(account *Account) {
             chAccounts <- account
         })
     }
@@ -55,9 +57,10 @@ func load() {
     for i := 0; i < *numLoaders; i++ {
         go func() {
             for batchMutation := range chBatchMutations {
-                debugger.PrintNothing(batchMutation)
+                sc.write(batchMutation)
             }
         }()
     }
+
 
 }
