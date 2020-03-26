@@ -32,8 +32,9 @@ func loadAccount(sc *SpannerClient, gcs *GCSclient) {
     chBatchMutations := make(chan []*spanner.Mutation, *numAccounts/100)
 
     wgReaders := &sync.WaitGroup{}
-    for _, file := range files {
-        debugger.Printf("Loading file %s...", file)
+    for i, file := range files {
+        debugger.Printf("Starting reader %d for file %s...", i, file)
+
         wgReaders.Add(1)
         go func() {
             defer wgReaders.Done()
@@ -42,19 +43,25 @@ func loadAccount(sc *SpannerClient, gcs *GCSclient) {
     }
 
     wgMutationMakers := &sync.WaitGroup{}
-    for i := 0; i < *numAccounts/recordsPerFile; i++ {
+    // TODO: for i := 0; i < *numAccounts/recordsPerFile; i++ {
+    for i := 0; i < 1; i++ {
+        debugger.Printf("Starting mutation maker %d", i)
+
         wgMutationMakers.Add(1)
         go func() {
             defer wgMutationMakers.Done()
             for account := range chAccounts {
-                mutation, _ := sc.newMutation("accounts", account)
+                mutation, _ := sc.newMutation("Account", account)
                 chMutations <- mutation
             }
         }()
     }
 
     wgBatchMakers := &sync.WaitGroup{}
-    for i := 0; i < *numAccounts/recordsPerFile; i++ {
+    // TODO: for i := 0; i < *numAccounts/recordsPerFile; i++ {
+    for i := 0; i < 1; i++ {
+        debugger.Printf("Starting batch maker %d", i)
+
         wgBatchMakers.Add(1)
         go func() {
             defer wgBatchMakers.Done()
@@ -66,11 +73,18 @@ func loadAccount(sc *SpannerClient, gcs *GCSclient) {
 
     wgLoaders := &sync.WaitGroup{}
     for i := 0; i < *numLoaders; i++ {
+        debugger.Printf("Starting loader %d", i)
+
         wgLoaders.Add(1)
         go func() {
             defer wgLoaders.Done()
+            i := 1
             for batchMutation := range chBatchMutations {
-                sc.write(batchMutation)
+                if err := sc.write(batchMutation); err != nil {
+                    log.Fatalf("%v", err)
+                }
+                debugger.Printf("Applied batch %d", i)
+                i++
             }
         }()
     }
