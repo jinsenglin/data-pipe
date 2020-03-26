@@ -81,7 +81,7 @@ func (client *SpannerClient) disconnect () {
 	debugger.Println("Finished closing Google Cloud Spanner connections.")
 }
 
-func (client *SpannerClient) clearTable (table string) error {
+func (client *SpannerClient) emptyTable (table string) error {
     ctx, cancel := context.WithTimeout(context.Background(), 30*time.Minute)
 	defer cancel()
 
