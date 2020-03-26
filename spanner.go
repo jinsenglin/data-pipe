@@ -30,8 +30,7 @@ func NewSpannerClient() (*SpannerClient, error) {
 
     ctx := context.Background()
 
-    // TODO: client, err := spanner.NewClient(ctx, databasePath, spanner.ClientConfig{NumChannels: 20})
-    client, err := spanner.NewClient(ctx, databasePath)
+    client, err := spanner.NewClientWithConfig(ctx, databasePath, spanner.ClientConfig{NumChannels: 20})
 	if err != nil {
 		return nil, err
 	}
