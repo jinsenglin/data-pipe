@@ -13,7 +13,7 @@ func create() {
     defer sc.cleanup()
 
     file, err := ioutil.ReadFile(*schemaFile)
-    if err != nil {
+	if err != nil {
 		log.Fatal(err)
 	}
 

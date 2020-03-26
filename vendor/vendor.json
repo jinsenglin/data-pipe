@@ -81,6 +81,12 @@
 			"revisionTime": "2020-03-20T19:08:28Z"
 		},
 		{
+			"checksumSHA1": "TsI/v329zjn2wAJJD4UyG/bFvIM=",
+			"path": "cloud.google.com/go/spanner/admin/database/apiv1",
+			"revision": "3e8951f5e3d821b4b0f8bcd2ab6b768a25b6f8b1",
+			"revisionTime": "2020-03-20T19:08:28Z"
+		},
+		{
 			"checksumSHA1": "slf1+TSsj6Y0+vlcNWPsd+LpRcM=",
 			"path": "cloud.google.com/go/spanner/admin/instance/apiv1",
 			"revision": "3e8951f5e3d821b4b0f8bcd2ab6b768a25b6f8b1",
@@ -857,6 +863,12 @@
 			"path": "google.golang.org/genproto/googleapis/rpc/status",
 			"revision": "6d2a73c7941e1a2004481be169bffe7319ec9c99",
 			"revisionTime": "2020-03-20T04:57:54Z"
+		},
+		{
+			"checksumSHA1": "uguFOChXog7jzO7KvbFRIQbrfDM=",
+			"path": "google.golang.org/genproto/googleapis/spanner/admin/database/v1",
+			"revision": "08878b785e9c1c5903852e4cb9277fce9d1e16d5",
+			"revisionTime": "2020-03-19T11:35:33Z"
 		},
 		{
 			"checksumSHA1": "ZlFt39YtvF8ySxFYF2uHiDbxoZ8=",
