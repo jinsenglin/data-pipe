@@ -33,7 +33,9 @@ func (d debugging) DumpVariables() {
 		log.Printf("%-10s = %v", "version", version)
 		log.Printf("%-10s = %v", "command", command)
 		log.Printf("%-10s = %v", "project", *project)
-		log.Printf("%-10s = %v", "bucketName", *bucketName)
+		log.Printf("%-10s = %v", "bucket", *bucket)
+		log.Printf("%-10s = %v", "instance", *instance)
+		log.Printf("%-10s = %v", "database", *database)
 	}
 }
 

@@ -17,7 +17,7 @@ func load() {
         log.Fatalf("Couldn't connect to Google Cloud Storage: %v", err)
     }
 
-    files, err := gcs.list(*bucketName, "account-")
+    files, err := gcs.list(*bucket, "account-")
     if err != nil {
         log.Fatalf("Couldn't list files of prefix account- %v", err)
     }
@@ -29,7 +29,7 @@ func load() {
 
     for _, file := range files {
         debugger.Printf("Loading file %s...", file)
-        gcs.readCSV(*bucketName, file, func(account *Account) {
+        gcs.readCSV(*bucket, file, func(account *Account) {
             // TODO: Implement.
             chAccounts <- account
         })

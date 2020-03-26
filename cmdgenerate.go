@@ -45,7 +45,7 @@ func generateAccounts(gcs *GCSclient, wg *sync.WaitGroup) {
             fileName := fmt.Sprintf("%v-%04d.csv", "account", i/recordsPerFile)
 
             wgGenerateAccounts.Add(1)
-            go gcs.writeCSV(*bucketName, fileName, accounts, wgGenerateAccounts)
+            go gcs.writeCSV(*bucket, fileName, accounts, wgGenerateAccounts)
 
             accounts = []*Account{}
         }
@@ -55,7 +55,7 @@ func generateAccounts(gcs *GCSclient, wg *sync.WaitGroup) {
         fileName := fmt.Sprintf("%v-%04d.csv", "account", *numAccounts/recordsPerFile)
 
         wgGenerateAccounts.Add(1)
-        go gcs.writeCSV(*bucketName, fileName, accounts, wgGenerateAccounts)
+        go gcs.writeCSV(*bucket, fileName, accounts, wgGenerateAccounts)
     }
 
     debugger.Println("Waiting for write accounts to GCS to finish....")
@@ -124,7 +124,7 @@ func generateSingersConsumer(gcs *GCSclient, in <-chan *Singer, wg *sync.WaitGro
             fileName := fmt.Sprintf("%v-%04d.csv", "singer", i/recordsPerFile)
 
             wgGenerateSingersConsumer.Add(1)
-            go gcs.writeCSV(*bucketName, fileName, singers, wgGenerateSingersConsumer)
+            go gcs.writeCSV(*bucket, fileName, singers, wgGenerateSingersConsumer)
 
             singers = []*Singer{}
         }
@@ -134,7 +134,7 @@ func generateSingersConsumer(gcs *GCSclient, in <-chan *Singer, wg *sync.WaitGro
         fileName := fmt.Sprintf("%v-%04d.csv", "singer", *numAccounts/recordsPerFile)
 
         wgGenerateSingersConsumer.Add(1)
-        go gcs.writeCSV(*bucketName, fileName, singers, wgGenerateSingersConsumer)
+        go gcs.writeCSV(*bucket, fileName, singers, wgGenerateSingersConsumer)
     }
 
     debugger.Println("Waiting for write singers to GCS to finish....")

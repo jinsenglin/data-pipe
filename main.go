@@ -11,7 +11,7 @@ var (
     command string // set by first argument
 
     project = flag.String("project", "", "Your cloud project ID.")
-    bucketName = flag.String("bucket", "", "The name of the bucket within your project.")
+    bucket = flag.String("bucket", "", "The name of the bucket within your project.")
     instance = flag.String("instance", "", "The Cloud Spanner Instance within your project.")
     database = flag.String("database", "", "The database name in your Cloud Spanner Instance.")
     schemaFile = flag.String("schema", "schema.sql", "Path to schema file for 'create' command")

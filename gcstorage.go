@@ -19,14 +19,14 @@ type GCSclient struct {
     *storage.Client
 }
 
-// list for passed bucketName filtered by passed filePrefix
-func (client *GCSclient) list (bucketName string, filePrefix string) ([]string, error) {
+// list for passed bucket filtered by passed filePrefix
+func (client *GCSclient) list (bucket string, filePrefix string) ([]string, error) {
 	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
 	var files []string
 
-	it := client.Bucket(bucketName).Objects(ctx, &storage.Query{Prefix: filePrefix})
+	it := client.Bucket(bucket).Objects(ctx, &storage.Query{Prefix: filePrefix})
 
 	for {
 		objAttrs, err := it.Next()
@@ -45,11 +45,11 @@ func (client *GCSclient) list (bucketName string, filePrefix string) ([]string, 
 }
 
 // read for passed filePath
-func (client *GCSclient) read (bucketName, filePath string) ([]byte, error) {
+func (client *GCSclient) read (bucket, filePath string) ([]byte, error) {
     ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
 	defer cancel()
 
-	reader, err := client.Bucket(bucketName).Object(filePath).NewReader(ctx)
+	reader, err := client.Bucket(bucket).Object(filePath).NewReader(ctx)
 
 	if err != nil {
 		return nil, err
@@ -67,8 +67,8 @@ func (client *GCSclient) read (bucketName, filePath string) ([]byte, error) {
 }
 
 // read for passed filePath then unmarshal the file content
-func (client *GCSclient) readCSV (bucketName, filePath string, callback interface{}) (error) {
-    file, err := client.read(bucketName, filePath)
+func (client *GCSclient) readCSV (bucket, filePath string, callback interface{}) (error) {
+    file, err := client.read(bucket, filePath)
 
     if err != nil {
         return err
@@ -82,11 +82,11 @@ func (client *GCSclient) readCSV (bucketName, filePath string, callback interfac
 }
 
 // write for passed filePath
-func (client *GCSclient) write (bucketName, filePath string, fileContent []byte) (error) {
+func (client *GCSclient) write (bucket, filePath string, fileContent []byte) (error) {
     ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
     defer cancel()
 
-    writer := client.Bucket(bucketName).Object(filePath).NewWriter(ctx)
+    writer := client.Bucket(bucket).Object(filePath).NewWriter(ctx)
 
     if _, err := writer.Write(fileContent); err != nil {
 		return err
@@ -100,7 +100,7 @@ func (client *GCSclient) write (bucketName, filePath string, fileContent []byte)
 }
 
 // marshal passed objects then write for passed filePath
-func (client *GCSclient) writeCSV(bucketName, filePath string, objects interface{}, wg *sync.WaitGroup) error {
+func (client *GCSclient) writeCSV(bucket, filePath string, objects interface{}, wg *sync.WaitGroup) error {
     defer wg.Done()
 
     debugger.Printf("Writing csv %s", filePath)
@@ -110,7 +110,7 @@ func (client *GCSclient) writeCSV(bucketName, filePath string, objects interface
 		return err
     }
 
-    if err := client.write(bucketName, filePath, []byte(csv)); err != nil {
+    if err := client.write(bucket, filePath, []byte(csv)); err != nil {
         log.Printf("Couldn't write csv %s: %v", filePath, err)
 		return err
     }
