@@ -81,6 +81,14 @@ func (client *SpannerClient) disconnect () {
 	debugger.Println("Finished closing Google Cloud Spanner connections.")
 }
 
+func (client *SpannerClient) clearTable (table string) error {
+    ctx, cancel := context.WithTimeout(context.Background(), 30*time.Minute)
+	defer cancel()
+
+	_, err := client.Apply(ctx, []*spanner.Mutation{spanner.Delete(table, spanner.AllKeys())})
+	return err 
+}
+
 func (client *SpannerClient) newMutation (table string, s interface{}) (*spanner.Mutation, error) {
     mutation, err := spanner.InsertOrUpdateStruct(table, s)
     if err != nil {

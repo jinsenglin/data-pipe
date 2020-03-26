@@ -47,7 +47,7 @@ func main() {
             load()
             break
         case "reset":
-            // TODO: Implement.
+            reset()
             break
         default:
             log.Fatalf("'%v' is not a valid command! Supported commands are: create generate load reset", command)
