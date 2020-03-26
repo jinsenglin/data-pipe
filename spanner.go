@@ -76,7 +76,10 @@ func (client *SpannerClient) createDB (schema string) error {
 }
 
 func (client *SpannerClient) cleanup () {
-    // TODO: Implement.
+    debugger.Println("Closing Google Cloud Spanner connections...")
+	client.Close()
+	client.admin.Close()
+	debugger.Println("Finished closing Google Cloud Spanner connections.")
 }
 
 func (client *SpannerClient) newMutation (table string, s interface{}) (*spanner.Mutation, error) {
