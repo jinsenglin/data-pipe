@@ -21,13 +21,11 @@ type GCSclient struct {
 
 // list for passed bucket filtered by passed filePrefix
 func (client *GCSclient) list (bucket string, filePrefix string) ([]string, error) {
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-	defer cancel()
-
-	var files []string
+	ctx, _ := context.WithTimeout(context.Background(), 30*time.Second)
 
 	it := client.Bucket(bucket).Objects(ctx, &storage.Query{Prefix: filePrefix})
 
+	var files []string
 	for {
 		objAttrs, err := it.Next()
 		if err == iterator.Done {
@@ -46,11 +44,9 @@ func (client *GCSclient) list (bucket string, filePrefix string) ([]string, erro
 
 // read for passed filePath
 func (client *GCSclient) read (bucket, filePath string) ([]byte, error) {
-    ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-	defer cancel()
+    ctx, _ := context.WithTimeout(context.Background(), 30*time.Second)
 
 	reader, err := client.Bucket(bucket).Object(filePath).NewReader(ctx)
-
 	if err != nil {
 		return nil, err
 	}
@@ -58,7 +54,6 @@ func (client *GCSclient) read (bucket, filePath string) ([]byte, error) {
 	defer reader.Close()
 
 	file, err := ioutil.ReadAll(reader)
-
 	if err != nil {
 		return nil, err
 	}
@@ -83,8 +78,7 @@ func (client *GCSclient) readCSV (bucket, filePath string, callback interface{})
 
 // write for passed filePath
 func (client *GCSclient) write (bucket, filePath string, fileContent []byte) (error) {
-    ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-    defer cancel()
+    ctx, _ := context.WithTimeout(context.Background(), 30*time.Second)
 
     writer := client.Bucket(bucket).Object(filePath).NewWriter(ctx)
 

@@ -54,24 +54,19 @@ func (client *SpannerClient) createDB (schema string) error {
 		}
 	}
 
-	ctx, cancel := context.WithTimeout(context.Background(), 30*time.Minute)
-	defer cancel()
+	ctx, _ := context.WithTimeout(context.Background(), 30*time.Second)
 
 	op, err := client.admin.CreateDatabase(ctx, &admindbpb.CreateDatabaseRequest{
-		Parent:          client.instancePath,
-		CreateStatement: "CREATE DATABASE `" + *database + "`",
-		ExtraStatements: statements,
+		Parent:             client.instancePath,
+		CreateStatement:    "CREATE DATABASE `" + *database + "`",
+		ExtraStatements:    statements,
 	})
 	if err != nil {
 		return err
 	}
 
 	_, err = op.Wait(ctx)
-	if err != nil {
-		return err
-	}
-
-    return nil
+    return err
 }
 
 func (client *SpannerClient) disconnect () {
@@ -82,8 +77,7 @@ func (client *SpannerClient) disconnect () {
 }
 
 func (client *SpannerClient) emptyTable (table string) error {
-    ctx, cancel := context.WithTimeout(context.Background(), 30*time.Minute)
-	defer cancel()
+    ctx, _ := context.WithTimeout(context.Background(), 30*time.Second)
 
 	_, err := client.Apply(ctx, []*spanner.Mutation{spanner.Delete(table, spanner.AllKeys())})
 	return err 
@@ -99,14 +93,8 @@ func (client *SpannerClient) newMutation (table string, s interface{}) (*spanner
 }
 
 func (client *SpannerClient) write (mutations []*spanner.Mutation) (error) {
-    ctx, cancel := context.WithTimeout(context.Background(), 30*time.Second)
-    defer cancel()
+    ctx, _ := context.WithTimeout(context.Background(), 30*time.Second)
 
-    if _, err := client.Apply(ctx, mutations); err != nil {
-        return err
-    }
-
-    return nil
+    _, err := client.Apply(ctx, mutations)
+    return err
 }
-
-
