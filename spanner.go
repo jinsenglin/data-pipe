@@ -74,7 +74,7 @@ func (client *SpannerClient) createDB (schema string) error {
     return nil
 }
 
-func (client *SpannerClient) cleanup () {
+func (client *SpannerClient) disconnect () {
     debugger.Println("Closing Google Cloud Spanner connections...")
 	client.Close()
 	client.admin.Close()

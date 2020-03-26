@@ -10,7 +10,7 @@ func create() {
     if err != nil {
 		log.Fatalf("Couldn't connect to Google Cloud Spanner: %v", err)
 	}
-    defer sc.cleanup()
+    defer sc.disconnect()
 
     file, err := ioutil.ReadFile(*schemaFile)
 	if err != nil {
